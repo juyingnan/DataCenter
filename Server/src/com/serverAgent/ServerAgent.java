@@ -51,15 +51,12 @@ public class ServerAgent
 	private final static String	TransactionID			= "transactionID";
 	private final static Logger	logger					= LoggerFactory.getLogger(ServerAgent.class);
 	private final String		TransactionByteBufferID	= "transactionByteBufferID";
-
-	// Yingnan
-	// Subs
 	private Subscriber			subscriber				= Subscriber.getInstance();
 
 	public ServerAgent()
 	{
 		// TODO Auto-generated constructor stub
-		logger.info("Begin:ServerAgent method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:ServerAgent method;" + TimeRecord.CurrentCompleteTime());
 		result = new HashMap<String, String>();
 		conn = DBConnection.getConnection(DBTYPE_MYSQL);
 		try
@@ -71,13 +68,13 @@ public class ServerAgent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("End:ServerAgent method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:ServerAgent method;" + TimeRecord.CurrentCompleteTime());
 	}
 
 	public Map<String, String> dealWithDbconn(Map<String, String> mappara)
 	{
 		// TODO Auto-generated method stub
-		logger.info("Begin:dealWithDbconn method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithDbconn method;" + TimeRecord.CurrentCompleteTime());
 		String sql = "select id from user where name ='" + mappara.get("name") + "'";
 		String id = null;
 		try
@@ -87,7 +84,7 @@ public class ServerAgent
 			{
 				id = rs.getString("id");
 				result.put("id", id);
-				System.out.println("id="+id);
+				System.out.println("id=" + id);
 			}
 		}
 		catch (SQLException e)
@@ -95,7 +92,7 @@ public class ServerAgent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Session.Set(id, getConn(mappara.get("dataType")));
 		logger.info("End:dealWithDbconn method;");
 		return result;
@@ -104,7 +101,7 @@ public class ServerAgent
 	private Object getConn(String dataType)
 	{
 		// TODO Auto-generated method stub
-		logger.info("Begin:getConn method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:getConn method;" + TimeRecord.CurrentCompleteTime());
 		Connection con = null;
 		String sql = "select * from t_metadata_store where dataKind='" + dataType + "'";
 		ArrayList<MetaDataStore> storeList = getDataStoreList(sql);
@@ -143,14 +140,14 @@ public class ServerAgent
 
 			}
 		}
-		logger.info("End:getConn method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:getConn method;" + TimeRecord.CurrentCompleteTime());
 		return con;
 	}
 
 	private ArrayList<MetaDataStore> getDataStoreList(String sql)
 	{
 		// TODO Auto-generated method stub
-		logger.info("Begin:getDataStoreList method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:getDataStoreList method;" + TimeRecord.CurrentCompleteTime());
 		ArrayList<MetaDataStore> metaDataStoreList = new ArrayList<MetaDataStore>();
 		try
 		{
@@ -174,14 +171,14 @@ public class ServerAgent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("End:getDataStoreList method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:getDataStoreList method;" + TimeRecord.CurrentCompleteTime());
 		return metaDataStoreList;
 	}
 
 	public Map<String, String> dealWithDataOper(Map<String, String> mappara)
 	{
 		// TODO Auto-generated method stub
-		logger.info("Begin:dealWithDataOper method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithDataOper method;" + TimeRecord.CurrentCompleteTime());
 		String ID = mappara.get("id");
 		String SQL = mappara.get("SQLinfo");
 		String TransactionID = mappara.get("transactionID");
@@ -191,32 +188,23 @@ public class ServerAgent
 			Connection conn = (Connection) Session.get(ID);
 			try
 			{
-				System.out.println("IP ");
 				PreparedStatement st = conn.prepareStatement(SQL);
 				st.executeUpdate();
 				dataOperMap.put("res", "0");
-				SqlSimpleParser simpleParser = new SqlSimpleParser();
-				String[] sqlStrings = simpleParser.parseSql(SQL);
-				String tableName = sqlStrings[0];
-				String title = sqlStrings[1];
-				String content = sqlStrings[2];
-				int oper = Integer.parseInt(sqlStrings[3]);
-				System.out.println("IP " + subscriber.messageArrayList.get(0).getIP());
-				subscriber.receiveDBChange(tableName, title, content, oper);
 			}
 			catch (SQLException e)
 			{
 				e.printStackTrace();
-				dataOperMap.put("res", "1");			
+				dataOperMap.put("res", "1");
 			}
 		}
-		logger.info("End:dealWithDataOper method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:dealWithDataOper method;" + TimeRecord.CurrentCompleteTime());
 		return dataOperMap;
 	}
 
 	public Map<String, String> dealWithAffairBegin(Map<String, String> mappara)
 	{
-		logger.info("Begin:dealWithAffairBegin method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithAffairBegin method;" + TimeRecord.CurrentCompleteTime());
 		Map<String, String> result = new HashMap<String, String>();
 		Map<String, String> task;
 		int tasktimes = 0;
@@ -252,7 +240,7 @@ public class ServerAgent
 				{
 					logger.info("dealWithTask---------------");
 					dealWithTask(task);
-					logger.info("End:dealWithAffairBegin method;"+ TimeRecord.CurrentCompleteTime());
+					logger.info("End:dealWithAffairBegin method;" + TimeRecord.CurrentCompleteTime());
 				}
 			}
 			catch (InterruptedException e)
@@ -264,37 +252,53 @@ public class ServerAgent
 
 	}
 
+	private boolean					taskLock	= false;
+	ArrayList<Map<String, String>>	taskList	= new ArrayList<Map<String, String>>();
+
 	private void dealWithTaskCommit(Map<String, String> task)
 	{
-		logger.info("Begin:dealWithTaskCommit method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithTaskCommit method;" + TimeRecord.CurrentCompleteTime());
 		Connection conn = (Connection) Session.get(task.get("id"));
 		try
 		{
 			conn.commit();
-			logger.info("End:dealWithTaskCommit method;"+ TimeRecord.CurrentCompleteTime());
+			for (Map<String, String> t : taskList)
+			{
+				SqlSimpleParser simpleParser = new SqlSimpleParser();
+				String[] sqlStrings = simpleParser.parseSql(t.get("SQLinfo"));
+				String tableName = sqlStrings[0];
+				String title = sqlStrings[1];
+				String content = sqlStrings[2];
+				int oper = Integer.parseInt(sqlStrings[3]);
+				System.out.println("IP " + tableName);
+				subscriber.receiveDBChange(tableName, title, content, oper);
+				try
+				{
+					Thread.sleep(50);
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Sent");
+			}
+			logger.info("End:dealWithTaskCommit method;" + TimeRecord.CurrentCompleteTime());
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
-		SqlSimpleParser simpleParser = new SqlSimpleParser();
-		String[] sqlStrings = simpleParser.parseSql(task.get("SQLinfo"));
-		String tableName = sqlStrings[0];
-		String title = sqlStrings[1];
-		String content = sqlStrings[2];
-		int oper = Integer.parseInt(sqlStrings[3]);
-		System.out.println("IP " + tableName);
-		subscriber.receiveDBChange(tableName, title, content, oper);
 	}
 
 	private void dealWithTaskRollBack(Map<String, String> task)
 	{
-		logger.info("Begin:dealWithTaskRollBack method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithTaskRollBack method;" + TimeRecord.CurrentCompleteTime());
 		Connection conn = (Connection) Session.get(task.get("id"));
 		try
 		{
 			conn.rollback();
-			logger.info("End:dealWithTaskRollBack method;"+ TimeRecord.CurrentCompleteTime());
+			logger.info("End:dealWithTaskRollBack method;" + TimeRecord.CurrentCompleteTime());
 		}
 		catch (SQLException e)
 		{
@@ -304,7 +308,7 @@ public class ServerAgent
 
 	private void dealWithTask(Map<String, String> task)
 	{
-		logger.info("Begin:dealWithTask method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithTask method;" + TimeRecord.CurrentCompleteTime());
 
 		logger.info("sql is " + task.get("SQLinfo"));
 		Connection conn = (Connection) Session.get(task.get("id"));
@@ -314,7 +318,7 @@ public class ServerAgent
 			Statement stat = conn.createStatement();
 			int flag = stat.executeUpdate(task.get("SQLinfo"));
 			stat.close();
-			logger.info("End:dealWithTask method;"+ TimeRecord.CurrentCompleteTime());
+			logger.info("End:dealWithTask method;" + TimeRecord.CurrentCompleteTime());
 		}
 		catch (SQLException e)
 		{
@@ -325,7 +329,7 @@ public class ServerAgent
 
 	private void dealWithTaskLobInsert(Map<String, String> task, ByteBuffer buffer)
 	{
-		logger.info("Begin:dealWithTaskLobInsert method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithTaskLobInsert method;" + TimeRecord.CurrentCompleteTime());
 		Connection conn = (Connection) Session.get(task.get("ID"));
 		System.out.println("in dealWithTaskLobInsert before inputStream");
 		InputStream inputStream = new ByteArrayInputStream(buffer.array());
@@ -344,12 +348,12 @@ public class ServerAgent
 		{
 			e.printStackTrace();
 		}
-		logger.info("End:dealWithTaskLobInsert method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:dealWithTaskLobInsert method;" + TimeRecord.CurrentCompleteTime());
 	}
 
 	private synchronized Map<String, String> getTask(String id) throws InterruptedException
 	{
-		logger.info("Begin:getTask method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:getTask method;" + TimeRecord.CurrentCompleteTime());
 		LinkedList<Map<String, String>> queue = WorkQueueMap.getWorkQueue().get(id);
 		if (queue.size() == 0)
 		{
@@ -359,7 +363,7 @@ public class ServerAgent
 				ThreadObjectSession.get(id).wait();
 			}
 		}
-		logger.info("End:getTask method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:getTask method;" + TimeRecord.CurrentCompleteTime());
 		return queue.removeFirst();
 	}
 
@@ -418,7 +422,7 @@ public class ServerAgent
 
 	public Map<String, String> dealWithDataSearchByMemory(Map<String, String> mappara)
 	{
-		logger.info("Begin:dealWithDataSearchByMemory method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithDataSearchByMemory method;" + TimeRecord.CurrentCompleteTime());
 		String ID = mappara.get("id");
 		String SQL = mappara.get("SQLinfo");
 		String TransactionID = mappara.get("transactionID");
@@ -443,13 +447,13 @@ public class ServerAgent
 				DataSearchByMemoryMap.put("success", "1");
 			}
 		}
-		logger.info("End:dealWithDataSearchByMemory method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:dealWithDataSearchByMemory method;" + TimeRecord.CurrentCompleteTime());
 		return DataSearchByMemoryMap;
 	}
 
 	public ByteBuffer dealWithLobSearch(Map<String, String> mappara)
 	{
-		logger.info("Begin:dealWithLobSearch method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithLobSearch method;" + TimeRecord.CurrentCompleteTime());
 		String ID = mappara.get("id");
 		String SQL = mappara.get("SQLinfo");
 		String TransactionID = mappara.get("transactionID");
@@ -478,13 +482,13 @@ public class ServerAgent
 			e.printStackTrace();
 			buff = null;
 		}
-		logger.info("End:dealWithLobSearch method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:dealWithLobSearch method;" + TimeRecord.CurrentCompleteTime());
 		return buff;
 	}
 
 	public Map<String, String> dealWithLobInsert(Map<String, String> mappara, ByteBuffer buffer)
 	{
-		logger.info("Begin:dealWithLobInsert method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("Begin:dealWithLobInsert method;" + TimeRecord.CurrentCompleteTime());
 		String ID = mappara.get("id");
 		String SQL = mappara.get("SQLinfo");
 		String TransactionID = mappara.get("transactionID");
@@ -512,7 +516,7 @@ public class ServerAgent
 				LobInsertMap.put("res", "1");
 			}
 		}
-		logger.info("End:dealWithLobInsert method;"+ TimeRecord.CurrentCompleteTime());
+		logger.info("End:dealWithLobInsert method;" + TimeRecord.CurrentCompleteTime());
 		return LobInsertMap;
 	}
 
