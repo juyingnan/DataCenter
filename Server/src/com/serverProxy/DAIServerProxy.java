@@ -83,17 +83,9 @@ public class DAIServerProxy implements Iface {
 		Map<String, String> resMap = null;
 		resMap = localServer.dataOper(mappara);
 		logger.info("End dataOper method;"+TimeRecord.CurrentCompleteTime());
-		String SQL = mappara.get("SQLinfo");
-		SqlSimpleParser simpleParser = new SqlSimpleParser();
-		String[] sqlStrings = simpleParser.parseSql(SQL);
-		String tableName = sqlStrings[0];
-		String title = sqlStrings[1];
-		String content = sqlStrings[2];
-		int oper = Integer.parseInt(sqlStrings[3]);
-		System.out.println("IP " + subscriber.messageArrayList.get(0).getIP());
-		subscriber.receiveDBChange(tableName, title, content, oper);
 		return resMap;
 	}
+	
 	public Map<String, String> affairBegin(Map<String, String> mappara)
 			throws TException {
 		// TODO Auto-generated method stub
