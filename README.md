@@ -1,10 +1,8 @@
 DataCenter
 ==========
 
-DataCenter
-Client & Server
+#### Client & Server.
 
-Initiated in 2014-3-31
-Committed by Yingnan Ju.
+Initiated in 2014-3-31. Committed by Yingnan Ju.
 
 All jar files are included.
