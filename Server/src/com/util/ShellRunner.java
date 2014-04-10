@@ -10,20 +10,25 @@ public class ShellRunner
 		return null;
 	}
 
-	public String runShell(String localIP, String localRootPasswd, String localMysqlUser, String localMysqlPasswd, String remoteIP, String remoteRootPasswd, String remoteMysqlUser,
-			String remoteMysqlPasswd, String dataBases[], String[] tables)
+	public String runShell(String localIP, String localRootPasswd, String localMysqlPasswd, String remoteIP, String remoteRootPasswd, String remoteMysqlPasswd, String dataBases[], String[] tables)
 	{
-		String shpath = "src/com/util/dbReplication.sh";
-		shpath += localIP + " " + localRootPasswd + " " + localMysqlUser + " " + localMysqlPasswd + " ";
-		shpath += remoteIP + " " + remoteRootPasswd + " " + remoteMysqlUser + " " + remoteMysqlPasswd + " ";
+		String shpath = "src/com/util/dbReplication.sh ";
+		shpath += localIP + " " + localRootPasswd + " " + localMysqlPasswd + " ";
+		shpath += remoteIP + " " + remoteRootPasswd + " " + remoteMysqlPasswd + " ";
+		shpath += "'";
 		for (String database : dataBases)
 		{
 			shpath += database + " ";
 		}
+		shpath = shpath.trim();
+		shpath += "' ";
+		shpath += "'";
 		for (String table : tables)
 		{
 			shpath += table + " ";
 		}
+		shpath = shpath.trim();
+		shpath += "'";
 		System.out.println(shpath);
 		run(shpath);
 		return null;
@@ -56,7 +61,10 @@ public class ShellRunner
 	{
 		ShellRunner shellRunner = new ShellRunner();
 		String[] databases = new String[1];
-		String[] tables = new String[1];
-		shellRunner.runShell("LOCAL_IP", "LOCAL_ROOT_PASSWD", "LOCAL_MYSQL_USER", "LOCAL_MYSQL_PASSWD", "REMOTE_IP", "REMOTE_ROOT_PASSWD", "REMOTE_MYSQL_USER", "REMOTE_MYSQL_PASSWD", null, null);
+		String[] tables = new String[2];
+		databases[0] = "DATABASE0";
+		tables[0] = "TABLE0";
+		tables[1] = "TABLE1";
+		shellRunner.runShell("LOCAL_IP", "LOCAL_ROOT_PASSWD", "LOCAL_MYSQL_PASSWD", "REMOTE_IP", "REMOTE_ROOT_PASSWD", "REMOTE_MYSQL_PASSWD", databases, tables);
 	}
 }

@@ -1,27 +1,35 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ $# -lt 9 ]; then
-    echo "Usage: test.sh \tlocal_IP local_root_passwd local_mysql_user local_mysql_passwd/"
-    echo "\t\tremote_IP remote_root_passwd remote_mysql_user remote_mysql_passwd/"
-    echo "\t\tdatabase table1 table2 table3..."
+if [ $# -lt 7 ]; then
+    echo "Usage: test.sh \tlocal_IP local_root_passwd local_mysql_passwd/"
+    echo "\t\tremote_IP remote_root_passwd remote_mysql_passwd/"
+    echo "\t\t'database1 database2 ...' 'tablecount table1 table2 table3...'"
 else
     # Output all parameters
-    echo "local_IP: \t\t\t" $1
-    echo "local_root_passwd: \t\t" $2
-    echo "local_mysql_user: \t\t" $3
-    echo "local_mysql_passwd: \t\t" $4
-    echo "remote_IP: \t\t\t" $5
-    echo "remote_root_passwd: \t\t" $6
-    echo "remote_mysql_user: \t\t" $7
-    echo "remote_mysql_passwd: \t\t" $8
-    echo "database: \t\t\t" $9
+    LOCAL_IP=$1
+    LOCAL_ROOT_PASSWD=$2
+    LOCAL_MYSQL_PASSWD=$3
+    REMOTE_IP=$4
+    REMOTE_ROOT_PASSWD=$5
+    REMOTE_MYSQL_PASSWD=$6
+    echo "local_IP: \t\t\t" $LOCAL_IP
+    echo "local_root_passwd: \t\t" $LOCAL_ROOT_PASSWD
+    echo "local_mysql_passwd: \t\t" $LOCAL_MYSQL_PASSWD
+    echo "remote_IP: \t\t\t" $REMOTE_IP
+    echo "remote_root_passwd: \t\t" $REMOTE_ROOT_PASSWD
+    echo "remote_mysql_passwd: \t\t" $REMOTE_MYSQL_PASSWD
+    # Output databases
+    databases=($7)
+	for v in ${databases[@]}
+	do
+		echo "database: \t\t\t" "$v"
+	done
     # Output tables
-    var=10
-    while [  $# -ge $var ];
-    do
-        echo "table " $((var-9)) ": \t\t\t" $(($var))
-        var=$((var+1))
-    done
+    tables=($8)
+	for v in ${tables[@]}
+	do
+		echo "table: \t\t\t" "$v"
+	done
 
     # （1） vim /etc/mysql/my.cnf
     # 在【mysqld】下面填写3句话
