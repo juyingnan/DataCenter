@@ -38,7 +38,8 @@ public class ShellRunner
 	{
 		try
 		{
-			Process ps = Runtime.getRuntime().exec(shpath);
+			// Process ps = Runtime.getRuntime().exec(shpath);
+			Process ps = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", shpath }, null, null);
 			ps.waitFor();
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream()));
@@ -65,6 +66,6 @@ public class ShellRunner
 		databases[0] = "DATABASE0";
 		tables[0] = "TABLE0";
 		tables[1] = "TABLE1";
-		shellRunner.runShell("LOCAL_IP", "LOCAL_ROOT_PASSWD", "LOCAL_MYSQL_PASSWD", "REMOTE_IP", "REMOTE_ROOT_PASSWD", "REMOTE_MYSQL_PASSWD", databases, tables);
+		shellRunner.runShell("LOCAL_IP", "iambunny", "root", "REMOTE_IP", "Sceri123", "REMOTE_MYSQL_PASSWD", databases, tables);
 	}
 }
