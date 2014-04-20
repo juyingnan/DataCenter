@@ -3,7 +3,7 @@ echo "Detect parameters"
 echo $# " Parameters"
 if [ $# -lt 10]; then
     echo "Usage: test.sh \tlocal_IP local_root_passwd local_mysql_passwd/"
-    echo "\t\tremote_IP remote_root_passwd remote_mysql_passwd/"
+    echo "\t\tremote_IP remote_username remote_root_passwd remote_mysql_passwd/"
     echo "\t\t'database1 database2 ...' 'tablecount table1 table2 table3...'"
 else
     # Output all parameters
@@ -11,22 +11,24 @@ else
     LOCAL_ROOT_PASSWD=$2
     LOCAL_MYSQL_PASSWD=$3
     REMOTE_IP=$4
-    REMOTE_ROOT_PASSWD=$5
-    REMOTE_MYSQL_PASSWD=$6
+    REMOTE_ROOT_USERNAME=$5
+    REMOTE_ROOT_PASSWD=$6
+    REMOTE_MYSQL_PASSWD=$7
     echo "local_IP: \t\t\t" $LOCAL_IP
     echo "local_root_passwd: \t\t" $LOCAL_ROOT_PASSWD
     echo "local_mysql_passwd: \t\t" $LOCAL_MYSQL_PASSWD
     echo "remote_IP: \t\t\t" $REMOTE_IP
+    echo "remote_username: \t\t" $REMOTE_ROOT_USERNAME
     echo "remote_root_passwd: \t\t" $REMOTE_ROOT_PASSWD
     echo "remote_mysql_passwd: \t\t" $REMOTE_MYSQL_PASSWD
     # Output databases
-    databases=($7)
+    databases=($8)
 	for v in ${databases[@]}
 	do
 		echo "database: \t\t\t" "$v"
 	done
     # Output tables
-    tables=($8)
+    tables=($9)
 	for v in ${tables[@]}
 	do
 		echo "table: \t\t\t" "$v"
@@ -45,8 +47,8 @@ else
     echo $2 | sudo -S sed -i "/#server-id/c server-id=1" /etc/mysql/my.cnf
     echo $2 | sudo -S sed -i "/server-id/c server-id=1" /etc/mysql/my.cnf
     cat /etc/mysql/my.cnf | grep 'server-id'
-    #echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
-    #echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+    echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+    echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
     cat  /etc/mysql/my.cnf | grep log_bin
     echo $2 | sudo -S sed -i "/max_binlog_size/a binlog_do_db=${databases[0]}" /etc/mysql/my.cnf
     cat  /etc/mysql/my.cnf | grep ${databases[0]}
@@ -72,9 +74,9 @@ EOF
 	#+------------------+----------+--------------+------------------+
 	#| mysql-bin.000017 |     8133 |        |                  |的一个表
 	#记好file和position
-	FILE=`mysql -uroot -proot -e "show master status\G;" | awk '/File/ {print $2}'`
+	FILE=`mysql -uroot -e "show master status\G;" | awk '/File/ {print $2}'`
 	echo "File = " $FILE 
-	POSITION=`mysql -uroot -proot -e "show master status\G;" | awk '/Position/ {print $2}'`
+	POSITION=`mysql -uroot -e "show master status\G;" | awk '/Position/ {print $2}'`
 	echo "Position = " $POSITION
 	
 	#英男，在第五步后面应该有添加
@@ -93,24 +95,23 @@ EOF
 	*assword:* {send -- $1\r;       
 	expect {  
 	*denied* {exit 2;} 
-eof} 
+	eof} 
       }  eof
       {exit 1;} 
-   }    
-   "      return $? 
+	}    
+	"      return $? 
  }    
 
- auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "echo ${5} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"
-    
- auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "    echo ${5} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
-  auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "  echo ${5} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
- auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "    cat /etc/mysql/my.cnf | grep 'server-id'"
-  auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "   echo ${5} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
- auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "    cat  /etc/mysql/my.cnf | grep log_bin"
-  auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "   echo ${5} | sudo -S sed -i '/max_binlog_size/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
-  auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "   cat  /etc/mysql/my.cnf | grep ${databases[0]}"
-auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "echo ${5} | sudo -S service mysql restart" 
-echo -e "\n---Exit Status: $?"	
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"    
+	auto_smart_ssh $6 $5@$4 "    echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "  echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "    cat /etc/mysql/my.cnf | grep 'server-id'"
+	auto_smart_ssh $6 $5@$4 "   echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "    cat  /etc/mysql/my.cnf | grep log_bin"
+	auto_smart_ssh $6 $5@$4 "   echo ${6} | sudo -S sed -i '/max_binlog_size/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "   cat  /etc/mysql/my.cnf | grep ${databases[0]}"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart" 
+	echo -e "\n---Exit Status: $?"	
 
 	#（6）在slave机器上的mysql下
 	#stop slave;
@@ -122,12 +123,11 @@ echo -e "\n---Exit Status: $?"
 	#show slave status\G
 	#孙明明  21:51:21
 	#图里面的slave_IO_Running和Slave_SQL_Running都为yes表示配置成功
-	MYSQLCMD="change master to master_host='${1}',master_user='slave',master_password='slave',master_log_file='$FILE',master_log_pos=$POSITION"
-	auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "mysql -uroot -e 'show master status\;'" 
-	auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "mysql -uroot -e 'stop slave\;'" 
-	auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "mysql -uroot -e '$MYSQLCMD\;'" 
-	auto_smart_ssh Sceri123 work@datacenter-adm.cloudapp.net "mysql -uroot -e 'start slave\;'" 
-echo -e "\n---Exit Status: $?"	
+	MYSQLCMD="change master to master_host=${1},master_user=root,master_password=,master_log_file=$FILE,master_log_pos=$POSITION" 
+	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'stop slave\;'" 
+	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'change master to master_host=\"${1}\",master_user=\"root\",master_password=\"\",master_log_file=\"$FILE\",master_log_pos=$POSITION\;'" 
+	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'start slave\;'" 
+	echo -e "\n---Exit Status: $?"	
     # root
     # echo "L1admin" | sudo -S touch /test
 fi

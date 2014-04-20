@@ -10,11 +10,11 @@ public class ShellRunner
 		return null;
 	}
 
-	public String runShell(String localIP, String localRootPasswd, String localMysqlPasswd, String remoteIP, String remoteRootPasswd, String remoteMysqlPasswd, String dataBases[], String[] tables)
+	public String runShell(String localIP, String localRootPasswd, String localMysqlPasswd, String remoteIP, String remoteUsername, String remoteRootPasswd, String remoteMysqlPasswd, String dataBases[], String[] tables)
 	{
 		String shpath = "src/com/util/dbReplication.sh ";
 		shpath += localIP + " " + localRootPasswd + " " + localMysqlPasswd + " ";
-		shpath += remoteIP + " " + remoteRootPasswd + " " + remoteMysqlPasswd + " ";
+		shpath += remoteIP + " " +remoteUsername + " "+ remoteRootPasswd + " " + remoteMysqlPasswd + " ";
 		shpath += "'";
 		for (String database : dataBases)
 		{
@@ -66,6 +66,6 @@ public class ShellRunner
 		databases[0] = "DATABASE0";
 		tables[0] = "TABLE0";
 		tables[1] = "TABLE1";
-		shellRunner.runShell("LOCAL_IP", "iambunny", "root", "REMOTE_IP", "Sceri123", "REMOTE_MYSQL_PASSWD", databases, tables);
+		shellRunner.runShell("localhost", "iambunny", "root", "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", databases, tables);
 	}
 }
