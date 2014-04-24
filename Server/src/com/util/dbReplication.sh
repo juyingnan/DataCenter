@@ -2,58 +2,57 @@
 echo "Detect parameters"
 echo $# " Parameters"
 if [ $# -lt 10]; then
-    echo "Usage: test.sh \tlocal_IP local_root_passwd local_mysql_passwd/"
-    echo "\t\tremote_IP remote_username remote_root_passwd remote_mysql_passwd/"
-    echo "\t\t'database1 database2 ...' 'tablecount table1 table2 table3...'"
+	echo "Usage: test.sh \tlocal_IP local_root_passwd local_mysql_passwd/"
+	echo "\t\tremote_IP remote_username remote_root_passwd remote_mysql_passwd/"
+	echo "\t\t'database1 database2 ...' 'tablecount table1 table2 table3...'"
 else
-    # Output all parameters
-    LOCAL_IP=$1
-    LOCAL_ROOT_PASSWD=$2
-    LOCAL_MYSQL_PASSWD=$3
-    REMOTE_IP=$4
-    REMOTE_ROOT_USERNAME=$5
-    REMOTE_ROOT_PASSWD=$6
-    REMOTE_MYSQL_PASSWD=$7
-    echo "local_IP: \t\t\t" $LOCAL_IP
-    echo "local_root_passwd: \t\t" $LOCAL_ROOT_PASSWD
-    echo "local_mysql_passwd: \t\t" $LOCAL_MYSQL_PASSWD
-    echo "remote_IP: \t\t\t" $REMOTE_IP
-    echo "remote_username: \t\t" $REMOTE_ROOT_USERNAME
-    echo "remote_root_passwd: \t\t" $REMOTE_ROOT_PASSWD
-    echo "remote_mysql_passwd: \t\t" $REMOTE_MYSQL_PASSWD
-    # Output databases
-    databases=($8)
+	# Output all parameters
+	LOCAL_IP=$1
+	LOCAL_ROOT_PASSWD=$2
+	LOCAL_MYSQL_PASSWD=$3
+	REMOTE_IP=$4
+	REMOTE_ROOT_USERNAME=$5
+	REMOTE_ROOT_PASSWD=$6
+	REMOTE_MYSQL_PASSWD=$7
+	echo "local_IP:   " $LOCAL_IP
+	echo "local_root_passwd:   " $LOCAL_ROOT_PASSWD
+	echo "local_mysql_passwd:   " $LOCAL_MYSQL_PASSWD
+	echo "remote_IP:   " $REMOTE_IP
+	echo "remote_username:   " $REMOTE_ROOT_USERNAME
+	echo "remote_root_passwd:   " $REMOTE_ROOT_PASSWD
+	echo "remote_mysql_passwd:   " $REMOTE_MYSQL_PASSWD
+	# Output databases
+	databases=($8)
 	for v in ${databases[@]}
-	do
-		echo "database: \t\t\t" "$v"
-	done
-    # Output tables
-    tables=($9)
+		do
+			echo "database:   " "$v"
+		done
+    	# Output tables
+    	tables=($9)
 	for v in ${tables[@]}
-	do
-		echo "table: \t\t\t" "$v"
-	done
+		do
+			echo "table:   " "$v"
+		done
 
-    # （1） vim /etc/mysql/my.cnf
-    # 在【mysqld】下面填写3句话
-    # server-id=1
-    # log-bin=/var/log/mysql/mysql-test-bin.log
-    # binlong-do-db=yewumasterslave(具体的数据库名，视具体情况而定)
-
-    echo "********************"
-    echo $2 | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
-    echo "/etc/mysql/my.cnf backup created"
-    echo "/etc/mysql/my.cnf mod start"
-    echo $2 | sudo -S sed -i "/#server-id/c server-id=1" /etc/mysql/my.cnf
-    echo $2 | sudo -S sed -i "/server-id/c server-id=1" /etc/mysql/my.cnf
-    cat /etc/mysql/my.cnf | grep 'server-id'
-    echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
-    echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
-    cat  /etc/mysql/my.cnf | grep log_bin
-    echo $2 | sudo -S sed -i "/max_binlog_size/a binlog_do_db=${databases[0]}" /etc/mysql/my.cnf
-    cat  /etc/mysql/my.cnf | grep ${databases[0]}
-    echo "/etc/mysql/my.cnf mod end"
-    echo "********************"
+	# （1） vim /etc/mysql/my.cnf
+	# 在【mysqld】下面填写3句话
+	# server-id=1
+	# log-bin=/var/log/mysql/mysql-test-bin.log
+	# binlong-do-db=yewumasterslave(具体的数据库名，视具体情况而定)
+	echo "********************"
+	echo $2 | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
+	echo "/etc/mysql/my.cnf backup created"
+	echo "/etc/mysql/my.cnf mod start"
+	echo $2 | sudo -S sed -i "/#server-id/c server-id=1" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/server-id/c server-id=1" /etc/mysql/my.cnf
+	cat /etc/mysql/my.cnf | grep 'server-id'
+	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+	cat  /etc/mysql/my.cnf | grep log_bin
+	echo $2 | sudo -S sed -i "/max_binlog_size/a binlog_do_db=${databases[0]}" /etc/mysql/my.cnf
+	cat  /etc/mysql/my.cnf | grep ${databases[0]}
+	echo "/etc/mysql/my.cnf mod end"
+	echo "********************"
 
 	#（3）service mysql restart
 	echo $2 | sudo -s service mysql restart
@@ -88,28 +87,34 @@ EOF
 	#replicate-do-table=yewumasterslave.dili2（有几个表需要同步就添加几条）
 	#service mysql restart
 	#mysql下 grant all privileges on *.* to root@'%' identified by '';
-	auto_smart_ssh () {
-    expect -c "set timeout -1;     
-	spawn ssh -o StrictHostKeyChecking=no $2 ${@:3};  
-	expect {
-	*assword:* {send -- $1\r;       
-	expect {  
-	*denied* {exit 2;} 
-	eof} 
-      }  eof
-      {exit 1;} 
+	auto_smart_ssh () 
+	{
+		expect -c "set timeout -1;     
+		spawn ssh -o StrictHostKeyChecking=no $2 ${@:3};  
+		expect 
+		{
+			*assword:* 
+			{send -- $1\r;       
+				expect 
+				{  
+					*denied* {exit 2;} 
+				eof
+				} 
+			}
+			eof
+			{exit 1;} 
+		}"
+		return $? 
 	}    
-	"      return $? 
- }    
 
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"    
-	auto_smart_ssh $6 $5@$4 "    echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "  echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "    cat /etc/mysql/my.cnf | grep 'server-id'"
-	auto_smart_ssh $6 $5@$4 "   echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "    cat  /etc/mysql/my.cnf | grep log_bin"
-	auto_smart_ssh $6 $5@$4 "   echo ${6} | sudo -S sed -i '/max_binlog_size/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "   cat  /etc/mysql/my.cnf | grep ${databases[0]}"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep log_bin"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/max_binlog_size/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${databases[0]}"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart" 
 	echo -e "\n---Exit Status: $?"	
 
@@ -128,6 +133,4 @@ EOF
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'change master to master_host=\"${1}\",master_user=\"root\",master_password=\"\",master_log_file=\"$FILE\",master_log_pos=$POSITION\;'" 
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'start slave\;'" 
 	echo -e "\n---Exit Status: $?"	
-    # root
-    # echo "L1admin" | sudo -S touch /test
 fi
