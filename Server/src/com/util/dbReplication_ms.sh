@@ -87,25 +87,19 @@ EOF
 	#replicate-do-table=yewumasterslave.dili2（有几个表需要同步就添加几条）
 	#service mysql restart
 	#mysql下 grant all privileges on *.* to root@'%' identified by '';
-	auto_smart_ssh () 
-	{
-		expect -c "set timeout -1;     
-		spawn ssh -o StrictHostKeyChecking=no $2 ${@:3};  
-		expect 
-		{
-			*assword:* 
-			{send -- $1\r;       
-				expect 
-				{  
-					*denied* {exit 2;} 
-				eof
-				} 
-			}
-			eof
-			{exit 1;} 
-		}"
-		return $? 
+auto_smart_ssh () {
+    expect -c "set timeout -1;     
+	spawn ssh -o StrictHostKeyChecking=no $2 ${@:3};  
+	expect {
+	*assword:* {send -- $1\r;       
+	expect {  
+	*denied* {exit 2;} 
+	eof} 
+      }  eof
+      {exit 1;} 
 	}    
+	"      return $? 
+ }  
 
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"    
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"

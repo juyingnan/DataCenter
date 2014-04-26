@@ -27,8 +27,8 @@ else
 		do
 			echo "database:   " "$v"
 		done
-    	# Output tables
-    	tables=($9)
+    # Output tables
+    tables=($9)
 	for v in ${tables[@]}
 		do
 			echo "table:   " "$v"
@@ -46,26 +46,77 @@ else
 	echo $2 | sudo -S sed -i "/#server-id/c server-id=1" /etc/mysql/my.cnf
 	echo $2 | sudo -S sed -i "/server-id/c server-id=1" /etc/mysql/my.cnf
 	cat /etc/mysql/my.cnf | grep 'server-id'
-	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
-	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+#	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+#	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf
 	cat  /etc/mysql/my.cnf | grep log_bin
-	echo $2 | sudo -S sed -i "/max_binlog_size/a binlog_do_db=${databases[0]}" /etc/mysql/my.cnf
-	cat  /etc/mysql/my.cnf | grep ${databases[0]}
 	echo "/etc/mysql/my.cnf mod end"
 	echo "********************"
-
-	#（3）service mysql restart
 	echo $2 | sudo -s service mysql restart
 	echo "service mysql restarted"
+
+	auto_smart_ssh () {
+    expect -c "set timeout -1;     
+	spawn ssh -o StrictHostKeyChecking=no $2 ${@:3};  
+	expect {
+	*assword:* {send -- $1\r;       
+	expect {  
+	*denied* {exit 2;} 
+	eof} 
+      }  eof
+      {exit 1;} 
+	}    
+	"      return $? 
+ }   
+
+ auto_smart_scp () {
+    expect -c "set timeout -1;     
+	spawn scp $2 $3;  
+	expect {
+	*assword:* {send -- $1\r;       
+	expect {  
+	*denied* {exit 2;} 
+	eof} 
+      }  eof
+      {exit 1;} 
+	}    
+	"      return $? 
+ }    
+
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"    
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep log_bin"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart"
+
+	auto_smart_scp $6 ./getfileandposition.sh $5@$4:/tmp
+	auto_smart_ssh $6 $5@$4 "chmod +x /tmp/getfileandposition.sh"
+	auto_smart_ssh $6 $5@$4 "/tmp/getfileandposition.sh"
+	auto_smart_scp $6 $5@$4:/tmp/file /tmp
+	auto_smart_scp $6 $5@$4:/tmp/position /tmp
+	FILE=`cat /tmp/file`
+	echo "master 2 File = " $FILE 
+	POSITION=`cat /tmp/position`
+	echo "master 2 Position = " $POSITION
 	
 	#(4)grant all privileges on *.* to root@'%' identified by '';
 	#孙明明  21:40:57
 	#第四条是在mysql下执行
 	mysql -uroot <<EOF
 	grant all privileges on *.* to root@'%' identified by '';
+	stop slave；
+	change master to master_host='${4}',master_user='root',master_password='',master_log_file='$FILE',master_log_pos=$POSITION;
+	start slave;
 	exit
 EOF
-	echo "grant all privileges on *.* to root@'%'"	
+	mysql -uroot -e 'stop slave;'
+	CHGCMD="change master to master_host='${4}',master_user='root',master_password='',master_log_file='$FILE',master_log_pos=$POSITION;"
+	echo $CHGCMD
+	mysql -uroot -e "change master to master_host='${4}',master_user='root',master_password='',master_log_file='$FILE',master_log_pos=$POSITION;"
+	mysql -uroot -e 'start slave;'
+	echo "MASTER 1 configuration complete"	
 	#（5）在master机器上的mysql下：show master status;
 	#孙明明  21:42:25
 	#会得到类似
@@ -74,49 +125,9 @@ EOF
 	#| mysql-bin.000017 |     8133 |        |                  |的一个表
 	#记好file和position
 	FILE=`mysql -uroot -e "show master status\G;" | awk '/File/ {print $2}'`
-	echo "File = " $FILE 
+	echo "master 1 File = " $FILE 
 	POSITION=`mysql -uroot -e "show master status\G;" | awk '/Position/ {print $2}'`
-	echo "Position = " $POSITION
-	
-	#英男，在第五步后面应该有添加
-	#在slave机器上 vi /etc/mysql/my.cnf
-	#在mysqld下面添加
-	#server-id=2
-	#replicate-do-db=yewumasterslave(具体的数据库名)
-	#replicate-do-table=yewumasterslave.dili1(需要部分同步的表名)
-	#replicate-do-table=yewumasterslave.dili2（有几个表需要同步就添加几条）
-	#service mysql restart
-	#mysql下 grant all privileges on *.* to root@'%' identified by '';
-	auto_smart_ssh () 
-	{
-		expect -c "set timeout -1;     
-		spawn ssh -o StrictHostKeyChecking=no $2 ${@:3};  
-		expect 
-		{
-			*assword:* 
-			{send -- $1\r;       
-				expect 
-				{  
-					*denied* {exit 2;} 
-				eof
-				} 
-			}
-			eof
-			{exit 1;} 
-		}"
-		return $? 
-	}    
-
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"    
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep log_bin"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/max_binlog_size/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${databases[0]}"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart" 
-	echo -e "\n---Exit Status: $?"	
+	echo "master 1 Position = " $POSITION
 
 	#（6）在slave机器上的mysql下
 	#stop slave;
