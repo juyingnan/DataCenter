@@ -2,24 +2,24 @@
 echo "Detect parameters"
 echo $# " Parameters"
 if [ $# -lt 10]; then
-	echo "Usage: test.sh \tlocal_IP local_root_passwd local_mysql_passwd/"
-	echo "\t\tremote_IP remote_username remote_root_passwd remote_mysql_passwd/"
+	echo "Usage: test.sh \tlocal_IP local_user_passwd local_mysql_passwd/"
+	echo "\t\tremote_IP remote_username remote_user_passwd remote_mysql_passwd/"
 	echo "\t\t'database1 database2 ...' 'tablecount table1 table2 table3...'"
 else
 	# Output all parameters
 	LOCAL_IP=$1
-	LOCAL_ROOT_PASSWD=$2
+	LOCAL_USER_PASSWD=$2
 	LOCAL_MYSQL_PASSWD=$3
 	REMOTE_IP=$4
-	REMOTE_ROOT_USERNAME=$5
-	REMOTE_ROOT_PASSWD=$6
+	REMOTE_USER_USERNAME=$5
+	REMOTE_USER_PASSWD=$6
 	REMOTE_MYSQL_PASSWD=$7
 	echo "local_IP:   " $LOCAL_IP
-	echo "local_root_passwd:   " $LOCAL_ROOT_PASSWD
+	echo "LOCAL_USER_PASSWD:   " $LOCAL_USER_PASSWD
 	echo "local_mysql_passwd:   " $LOCAL_MYSQL_PASSWD
 	echo "remote_IP:   " $REMOTE_IP
-	echo "remote_username:   " $REMOTE_ROOT_USERNAME
-	echo "remote_root_passwd:   " $REMOTE_ROOT_PASSWD
+	echo "remote_username:   " $REMOTE_USER_USERNAME
+	echo "REMOTE_USER_PASSWD:   " $REMOTE_USER_PASSWD
 	echo "remote_mysql_passwd:   " $REMOTE_MYSQL_PASSWD
 	# Output databases
 	databases=($8)
