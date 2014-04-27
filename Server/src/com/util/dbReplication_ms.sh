@@ -48,6 +48,7 @@ else
 	cat /etc/mysql/my.cnf | grep 'server-id'
 	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
 	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/bind-address/c #bind-address = 127.0.0.1" /etc/mysql/my.cnf
 	cat  /etc/mysql/my.cnf | grep log_bin
 	echo $2 | sudo -S sed -i "/max_binlog_size/a binlog_do_db=${databases[0]}" /etc/mysql/my.cnf
 	cat  /etc/mysql/my.cnf | grep ${databases[0]}
@@ -106,9 +107,16 @@ auto_smart_ssh () {
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/bind-address/c #bind-address = 127.0.0.1' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep log_bin"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/max_binlog_size/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/max_binlog_size/a replicate-do-db=${databases[0]}' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${databases[0]}"
+
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#binlog_ignore_db/a replicate-do-table=${databases[0]}.${tables[0]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${tables[0]}"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#binlog_ignore_db/a replicate-do-table=${databases[0]}.${tables[1]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${tables[1]}"
+
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart" 
 	echo -e "\n---Exit Status: $?"	
 
