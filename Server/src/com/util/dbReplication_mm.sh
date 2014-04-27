@@ -46,9 +46,9 @@ else
 	echo $2 | sudo -S sed -i "/#server-id/c server-id=1" /etc/mysql/my.cnf
 	echo $2 | sudo -S sed -i "/server-id/c server-id=1" /etc/mysql/my.cnf
 	cat /etc/mysql/my.cnf | grep 'server-id'
-#	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
-#	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
-	echo $2 | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
+#	echo $2 | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf
 	cat  /etc/mysql/my.cnf | grep log_bin
 	echo "/etc/mysql/my.cnf mod end"
 	echo "********************"
@@ -87,7 +87,8 @@ else
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i 's/#log_bin/log_bin/g' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep log_bin"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart"
 
@@ -106,9 +107,6 @@ else
 	#第四条是在mysql下执行
 	mysql -uroot <<EOF
 	grant all privileges on *.* to root@'%' identified by '';
-	stop slave；
-	change master to master_host='${4}',master_user='root',master_password='',master_log_file='$FILE',master_log_pos=$POSITION;
-	start slave;
 	exit
 EOF
 	mysql -uroot -e 'stop slave;'
@@ -139,8 +137,8 @@ EOF
 	#show slave status\G
 	#孙明明  21:51:21
 	#图里面的slave_IO_Running和Slave_SQL_Running都为yes表示配置成功
-	MYSQLCMD="change master to master_host=${1},master_user=root,master_password=,master_log_file=$FILE,master_log_pos=$POSITION" 
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'stop slave\;'" 
+	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'grant all privileges on *.* to root@\'%\' identified by \'\'\;'"
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'change master to master_host=\"${1}\",master_user=\"root\",master_password=\"\",master_log_file=\"$FILE\",master_log_pos=$POSITION\;'" 
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'start slave\;'" 
 	echo -e "\n---Exit Status: $?"	
