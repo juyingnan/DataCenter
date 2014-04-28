@@ -144,8 +144,7 @@ EOF
 	#show slave status\G
 	#孙明明  21:51:21
 	#图里面的slave_IO_Running和Slave_SQL_Running都为yes表示配置成功
-	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'stop slave\;'" 
-	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'grant all privileges on *.* to root@\'%\' identified by \'\'\;'"
+	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'stop slave\;'"
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'change master to master_host=\"${1}\",master_user=\"root\",master_password=\"\",master_log_file=\"$FILE\",master_log_pos=$POSITION\;'" 
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'start slave\;'" 
 	echo -e "\n---Exit Status: $?"	
