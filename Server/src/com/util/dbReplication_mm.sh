@@ -34,6 +34,18 @@ else
 			echo "table:   " "$v"
 		done
 
+	function random()
+	{
+	    min=1;
+	    max=4294967290;
+	    num=$(date +%s+%N);
+	    ((retnum=num%max+min));
+	    #进行求余数运算即可
+	    echo $retnum;
+	    #这里通过echo 打印出来值，然后获得函数的，stdout就可以获得值
+	    #还有一种返回，定义全价变量，然后函数改下内容，外面读取
+	}
+
 	# （1） vim /etc/mysql/my.cnf
 	# 在【mysqld】下面填写3句话
 	# server-id=1
@@ -43,8 +55,9 @@ else
 	echo $2 | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
 	echo "/etc/mysql/my.cnf backup created"
 	echo "/etc/mysql/my.cnf mod start"
-	echo $2 | sudo -S sed -i "/#server-id/c server-id=1" /etc/mysql/my.cnf
-	echo $2 | sudo -S sed -i "/server-id/c server-id=1" /etc/mysql/my.cnf
+	sid = $(random);
+	echo $2 | sudo -S sed -i "/#server-id/c server-id=$sid" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/server-id/c server-id=$sid" /etc/mysql/my.cnf
 	cat /etc/mysql/my.cnf | grep 'server-id'
 	echo $2 | sudo -S sed -i "/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
 	echo $2 | sudo -S sed -i "/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log" /etc/mysql/my.cnf
