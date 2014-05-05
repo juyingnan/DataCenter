@@ -83,7 +83,7 @@ else
       }  eof
       {exit 1;} 
 	}    
-	"      return $? 
+	" 
  }   
 
  auto_smart_scp () {
@@ -97,7 +97,7 @@ else
       }  eof
       {exit 1;} 
 	}    
-	"      return $? 
+	" 
  }    
 
 	sid=$(random)
@@ -164,10 +164,10 @@ EOF
 	echo -e "\n---Exit Status: $?"
 	
 	#TEST RESULT
-	L_SIR=mysql -uroot -e "show slave status\G;" | awk '$0 ~/Slave_IO_Running/ {print $2}'
-	L_SSR=mysql -uroot -e "show slave status\G;" | awk '$0 ~/Slave_SQL_Running/ {print $2}'
-	R_SIR=auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $16}'
-	R_SSR=auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $17}'
+	L_SIR=`mysql -uroot -e "show slave status\G;" | awk '$0 ~/Slave_IO_Running/ {print $2}'`
+	L_SSR=`mysql -uroot -e "show slave status\G;" | awk '$0 ~/Slave_SQL_Running/ {print $2}'`
+	R_SIR=`auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $16}'`
+	R_SSR=`auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $17}'`
 	if [ $L_SIR = "Yes" -a $L_SSR = "Yes" -a $R_SIR = "Yes" -a $R_SSR = "Yes" ] ; then 
 	echo "SUCCESSFUL"
 	else
