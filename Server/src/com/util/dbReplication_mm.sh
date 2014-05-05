@@ -55,7 +55,7 @@ else
 	echo $2 | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
 	echo "/etc/mysql/my.cnf backup created"
 	echo "/etc/mysql/my.cnf mod start"
-	sid = $(random);
+	sid = $(random)
 	echo $2 | sudo -S sed -i "/#server-id/c server-id=$sid" /etc/mysql/my.cnf
 	echo $2 | sudo -S sed -i "/server-id/c server-id=$sid" /etc/mysql/my.cnf
 	cat /etc/mysql/my.cnf | grep 'server-id'
