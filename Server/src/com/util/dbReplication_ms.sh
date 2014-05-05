@@ -112,7 +112,7 @@ auto_smart_ssh () {
       }  eof
       {exit 1;} 
 	}    
-	"      return $? 
+	"
  }  
 
 	sid=$(random)
@@ -149,4 +149,14 @@ auto_smart_ssh () {
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'change master to master_host=\"${1}\",master_user=\"root\",master_password=\"\",master_log_file=\"$FILE\",master_log_pos=$POSITION\;'" 
 	auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'start slave\;'" 
 	echo -e "\n---Exit Status: $?"	
+	#TEST RESULT
+	R_SIR=`auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $16}'`
+	R_SSR=`auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $17}'`
+	echo $R_SIR
+	echo $R_SSR
+	if [ $R_SIR = "Yes" -a $R_SSR = "Yes" ] ; then 
+	echo "SUCCESSFUL!"
+	else
+	echo "FAILED!"
+	fi
 fi

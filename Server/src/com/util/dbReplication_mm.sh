@@ -168,9 +168,13 @@ EOF
 	L_SSR=`mysql -uroot -e "show slave status\G;" | awk '$0 ~/Slave_SQL_Running/ {print $2}'`
 	R_SIR=`auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $16}'`
 	R_SSR=`auto_smart_ssh $6 $5@$4 "mysql -uroot -e 'show slave status\;'"|awk '$0 ~/3306/ {print $17}'`
+	echo $L_SIR
+	echo $L_SSR
+	echo $R_SIR
+	echo $R_SSR
 	if [ $L_SIR = "Yes" -a $L_SSR = "Yes" -a $R_SIR = "Yes" -a $R_SSR = "Yes" ] ; then 
-	echo "SUCCESSFUL"
+	echo "SUCCESSFUL!"
 	else
-	echo "FAILED"
+	echo "FAILED!"
 	fi
 fi

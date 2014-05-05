@@ -10,7 +10,7 @@ public class ShellRunner
 		return null;
 	}
 
-	public String runShell(Boolean mode, String localIP, String localUserPasswd, String localMysqlPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd, String remoteMysqlPasswd,
+	public boolean runShell(Boolean mode, String localIP, String localUserPasswd, String localMysqlPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd, String remoteMysqlPasswd,
 			String dataBases[], String[] tables)
 	{
 		/*
@@ -38,11 +38,10 @@ public class ShellRunner
 		shpath = shpath.trim();
 		shpath += "'";
 		System.out.println(shpath);
-		run(shpath);
-		return null;
+		return run(shpath);
 	}
 
-	private void run(String shpath)
+	private boolean run(String shpath)
 	{
 		try
 		{
@@ -59,10 +58,15 @@ public class ShellRunner
 			}
 			String result = sb.toString();
 			System.out.println(result);
+			if (result.contains("SUCCESSFUL!"))
+				return true;
+			else
+				return false;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -74,7 +78,8 @@ public class ShellRunner
 		databases[0] = "DATABASE0";
 		tables[0] = "TABLE0";
 		tables[1] = "TABLE1";
-		//shellRunner.runShell(false, "localhost", "iambunny", "root", "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", databases, tables);
-		shellRunner.runShell(true, "localhost", "iambunny", "root", "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", databases, tables);
+		// shellRunner.runShell(false, "localhost", "iambunny", "root", "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", databases, tables);
+		boolean result = shellRunner.runShell(false, "localhost", "iambunny", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
+		System.out.println(result);
 	}
 }
