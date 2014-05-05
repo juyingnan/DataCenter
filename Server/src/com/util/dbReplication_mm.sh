@@ -38,7 +38,7 @@ else
 	{
 	    min=1;
 	    max=4294967290;
-	    num=$(date +%s+%N);
+	    num=$(date +%s%N);
 	    ((retnum=num%max+min));
 	    #进行求余数运算即可
 	    echo $retnum;
@@ -55,7 +55,7 @@ else
 	echo $2 | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
 	echo "/etc/mysql/my.cnf backup created"
 	echo "/etc/mysql/my.cnf mod start"
-	sid = $(random)
+	sid=$(random)
 	echo $2 | sudo -S sed -i "/#server-id/c server-id=$sid" /etc/mysql/my.cnf
 	echo $2 | sudo -S sed -i "/server-id/c server-id=$sid" /etc/mysql/my.cnf
 	cat /etc/mysql/my.cnf | grep 'server-id'
@@ -100,9 +100,10 @@ else
 	"      return $? 
  }    
 
+	sid=$(random)
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"    
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=2' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=2' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#server-id/c server-id=$sid' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/c server-id=$sid' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/c log_bin=/var/log/mysql/mysql-test-bin.log' /etc/mysql/my.cnf"
