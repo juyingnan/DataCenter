@@ -172,4 +172,5 @@ EOF
 	echo "SUCCESSFUL"
 	else
 	echo "FAILED"
+	fi
 fi
