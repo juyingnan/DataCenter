@@ -172,5 +172,4 @@ EOF
 	echo "SUCCESSFUL"
 	else
 	echo "FAILED"
-echo "Linux" 
 fi
