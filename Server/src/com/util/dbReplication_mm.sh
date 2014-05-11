@@ -58,7 +58,7 @@ else
 	sid=$(random)
 	logbin="/var/log/mysql/mysql-test-bin.log"
 	echo $2 | sudo -S sed -i "/server-id/d" /etc/mysql/my.cnf
-	echo $2 | sudo -S sed -i "/[mysqld]/a server-id=$sid" /etc/mysql/my.cnf
+	echo $2 | sudo -S sed -i "/log_error/a server-id=$sid" /etc/mysql/my.cnf
 	cat /etc/mysql/my.cnf | grep 'server-id'
 	
 	echo $2 | sudo -S sed -i "/log_bin/d" /etc/mysql/my.cnf
@@ -111,7 +111,7 @@ else
 	sid=$(random)
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S cp /etc/mysql/my.cnf /etc/mysql/my.cnf.backup"
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/server-id/d' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/[mysqld]/a server-id=$sid' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_error/a server-id=$sid' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep 'server-id'"
 	
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/d' /etc/mysql/my.cnf"
