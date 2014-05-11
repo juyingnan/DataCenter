@@ -134,13 +134,14 @@ auto_smart_ssh () {
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/bind-address/c #bind-address = 127.0.0.1' /etc/mysql/my.cnf"
 	
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/binlog_do_db/d' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a binlog_do_db=${databases[0]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/replicate_do_db/d' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a replicate_do_db=${databases[0]}' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep ${databases[0]}"
 
-
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#log_bin/a replicate-do-table=${databases[0]}.${tables[0]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/replicate-do-table/d' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a replicate-do-table=${databases[0]}.${tables[0]}' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${tables[0]}"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/#log_bin/a replicate-do-table=${databases[0]}.${tables[1]}' /etc/mysql/my.cnf"
+	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a replicate-do-table=${databases[0]}.${tables[1]}' /etc/mysql/my.cnf"
 	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${tables[1]}"
 
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart" 
