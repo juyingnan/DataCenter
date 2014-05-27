@@ -4,10 +4,12 @@ echo $# " Parameters"
 if [ $# -lt 9]; then
 	echo "Usage: test.sh \tlocal_IP local_user_passwd local_mysql_passwd/"
 	echo "\t\tremote_IP remote_username remote_user_passwd remote_mysql_passwd/"
-	echo "\t\t'database1 database2 ...' 'tablecount table1 table2 table3...'"
+	echo "\t\t'database1:database2 ...' 'table1:table2:table3...'"
 else
 	# Output all parameters
 	LOCAL_IP=$1
+	shift
+	LOCAL_USER_NAME=$1
 	LOCAL_USER_PASSWD=$2
 	LOCAL_MYSQL_PASSWD=$3
 	REMOTE_IP=$4
@@ -22,13 +24,13 @@ else
 	echo "REMOTE_USER_PASSWD:   " $REMOTE_USER_PASSWD
 	echo "remote_mysql_passwd:   " $REMOTE_MYSQL_PASSWD
 	# Output databases
-	databases=($8)
+	databases=($(echo $8 | tr ':' ' ' | tr -s ' '))
 	for v in ${databases[@]}
 		do
 			echo "database:   " "$v"
 		done
-    # Output tables
-    tables=($9)
+	# Output tables
+    	tables=($(echo $9 | tr ':' ' ' | tr -s ' '))
 	for v in ${tables[@]}
 		do
 			echo "table:   " "$v"
