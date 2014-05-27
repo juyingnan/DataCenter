@@ -141,11 +141,11 @@ auto_smart_ssh () {
 	auto_smart_ssh $6 $5@$4 "cat /etc/mysql/my.cnf | grep ${databases[0]}"
 
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/replicate-do-table/d' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a replicate-do-table=${databases[0]}.${tables[0]}' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${tables[0]}"
-	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a replicate-do-table=${databases[0]}.${tables[1]}' /etc/mysql/my.cnf"
-	auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep ${tables[1]}"
-
+	for table in ${tables[@]}
+	do
+		auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S sed -i '/log_bin/a replicate-do-table=${databases[0]}.$table' /etc/mysql/my.cnf"
+		auto_smart_ssh $6 $5@$4 "cat  /etc/mysql/my.cnf | grep $table"
+	done
 	auto_smart_ssh $6 $5@$4 "echo ${6} | sudo -S service mysql restart" 
 	echo -e "\n---Exit Status: $?"	
 
