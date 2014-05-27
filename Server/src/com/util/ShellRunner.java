@@ -17,25 +17,28 @@ public class ShellRunner
 		 * mode: false master_slave true master_master
 		 */
 		String shpath;
+		shpath = "src/com/util/caller.sh ";
 		if (mode)
-			shpath = "src/com/util/dbReplication_mm.sh ";
+			shpath += "dbReplication_mm.sh ";
 		else
-			shpath = "src/com/util/dbReplication_ms.sh ";
+			shpath = "dbReplication_ms.sh ";
 		shpath += localIP + " " + localUserPasswd + " " + localMysqlPasswd + " ";
 		shpath += remoteIP + " " + remoteUsername + " " + remoteUserPasswd + " " + remoteMysqlPasswd + " ";
 		shpath += "'";
 		for (String database : dataBases)
 		{
-			shpath += database + " ";
+			shpath += database + ":";
 		}
 		shpath = shpath.trim();
+		shpath = shpath.substring(0, shpath.length()-1);
 		shpath += "' ";
 		shpath += "'";
 		for (String table : tables)
 		{
-			shpath += table + " ";
+			shpath += table + ":";
 		}
 		shpath = shpath.trim();
+		shpath = shpath.substring(0, shpath.length()-1);
 		shpath += "'";
 		System.out.println(shpath);
 		return run(shpath);
@@ -78,8 +81,8 @@ public class ShellRunner
 		databases[0] = "DATABASE0";
 		tables[0] = "TABLE0";
 		tables[1] = "TABLE1";
-		// shellRunner.runShell(false, "localhost", "iambunny", "root", "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", databases, tables);
-		boolean result = shellRunner.runShell(false, "localhost", "iambunny", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
+		// boolean result = shellRunner.runShell(true, "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
+		boolean result = shellRunner.runShell(false, "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
 		System.out.println(result);
 	}
 }
