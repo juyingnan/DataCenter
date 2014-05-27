@@ -42,5 +42,7 @@ eof}
 "
  } 
 
-auto_smart_scp $3 ./call.sh $2@$1:/tmp
-auto_smart_ssh $3 $2@$1 "/tmp/call.sh $*"
+FILE=$1
+shift
+auto_smart_scp $3 ./$FILE $2@$1:/tmp
+auto_smart_ssh $3 $2@$1 "/tmp/$FILE $*"
