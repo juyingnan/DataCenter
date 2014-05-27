@@ -10,8 +10,8 @@ public class ShellRunner
 		return null;
 	}
 
-	public boolean runShell(Boolean mode, String localIP, String localUserPasswd, String localMysqlPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd, String remoteMysqlPasswd,
-			String dataBases[], String[] tables)
+	public boolean runShell(Boolean mode, String localIP, String localUserName, String localUserPasswd, String localMysqlPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd,
+			String remoteMysqlPasswd, String dataBases[], String[] tables)
 	{
 		/*
 		 * mode: false master_slave true master_master
@@ -21,8 +21,8 @@ public class ShellRunner
 		if (mode)
 			shpath += "dbReplication_mm.sh ";
 		else
-			shpath = "dbReplication_ms.sh ";
-		shpath += localIP + " " + localUserPasswd + " " + localMysqlPasswd + " ";
+			shpath += "dbReplication_ms.sh ";
+		shpath += localIP + " " + localUserName + " " + localUserPasswd + " " + localMysqlPasswd + " ";
 		shpath += remoteIP + " " + remoteUsername + " " + remoteUserPasswd + " " + remoteMysqlPasswd + " ";
 		shpath += "'";
 		for (String database : dataBases)
@@ -30,7 +30,7 @@ public class ShellRunner
 			shpath += database + ":";
 		}
 		shpath = shpath.trim();
-		shpath = shpath.substring(0, shpath.length()-1);
+		shpath = shpath.substring(0, shpath.length() - 1);
 		shpath += "' ";
 		shpath += "'";
 		for (String table : tables)
@@ -38,7 +38,7 @@ public class ShellRunner
 			shpath += table + ":";
 		}
 		shpath = shpath.trim();
-		shpath = shpath.substring(0, shpath.length()-1);
+		shpath = shpath.substring(0, shpath.length() - 1);
 		shpath += "'";
 		System.out.println(shpath);
 		return run(shpath);
@@ -82,7 +82,7 @@ public class ShellRunner
 		tables[0] = "TABLE0";
 		tables[1] = "TABLE1";
 		// boolean result = shellRunner.runShell(true, "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
-		boolean result = shellRunner.runShell(false, "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
+		boolean result = shellRunner.runShell(true, "datacenter-adm.cloudapp.net", "work", "Sceri123", "root", "datacenter-slv.cloudapp.net", "work", "Sceri123", "root", databases, tables);
 		System.out.println(result);
 	}
 }
