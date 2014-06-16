@@ -1,18 +1,22 @@
 #!/bin/bash
 # 管理节点
 
-# 0. 删除mysql
+# 0. 如果已经存在MySql，需要先删除
 
-# 1. 安装cluster
+# 1. install MySql Cluster
 
 # 1.1 extract
 
 # 1.2 move
 
-# 1.3 install
+# 1.3 chown & chgrp
 
-# 2. config
+# 1.4 install
 
-# 2.1 config
+# 1.5 auto start config
+
+# 2. mysql config
+
+# 2.1 config.ini
 
 # 2.2 my.cnf
