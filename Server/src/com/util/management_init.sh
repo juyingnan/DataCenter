@@ -35,19 +35,24 @@ echo $2 | sudo -S cp /usr/local/mysql/bin/ndb_mgm* /usr/local/bin
 echo $2 | sudo -S mkdir /var/lib/mysql-cluster
 # 2.1 config.ini "/var/lib/mysql-cluster/config.ini"
 echo $2 | sudo -S touch /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S chmod 666 /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S echo "" >/var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a [ndbd default]' /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S sed -i '1d' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a NoOfReplicas=1' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a DataMemory=200M' /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S sed -i '$a IndexMemory=20M' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a [ndb_mgmd]' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a NodeId=1' /var/lib/mysql-cluster/config.ini
-echo $2 | sudo -S sed -i "$a hostname=$1" /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S sed -i '$a hostname='"$1" /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a datadir=/var/lib/mysql-cluster/' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a [ndbd]' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a NodeId=2' /var/lib/mysql-cluster/config.ini
-echo $2 | sudo -S sed -i "$a hostname=$1" /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S sed -i '$a hostname='"$1" /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a datadir=/usr/local/mysql/data/' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
-echo $2 | sudo -S sed -i "$a hostname=$1" /var/lib/mysql-cluster/config.ini
+echo $2 | sudo -S sed -i '$a hostname='"$1" /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 echo $2 | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 # 2.2 my.cnf
+
