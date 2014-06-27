@@ -26,8 +26,10 @@ echo $PASSWD | sudo -S chgrp -R mysql .
 cd scripts/
 echo $PASSWD | sudo -S ./mysql_install_db --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
 # 1.5 auto start config
-echo $PASSWD | sudo -S chmod +x /etc/rc.d/init.d/mysqld
-echo $PASSWD | sudo -S chkconfig --add mysqld
+cd /usr/local/mysql
+echo $PASSWD | sudo -S cp support-files/mysql.server /etc/init.d/mysqld
+echo $PASSWD | sudo -S mkdir -p /var/mysql/data
+echo $PASSWD | sudo -S mkdir -p /var/mysql/logs
 if [ `cat /etc/profile | grep -c 'PATH=$PATH:/usr/local/mysql/bin'` != 0 ] ;then
     echo "/etc/profile needs no change"
 else
