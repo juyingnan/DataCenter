@@ -17,7 +17,7 @@ echo $PASSWD | sudo -S echo $PASSWD | sudo -S
 
 # 返回结果
 RESULT=`/usr/local/bin/ndb_mgm -e "show;" | grep -c "$1" `
-if [ RESULT != 4 ] ;then
+if [ $RESULT != 4 ] ;then
     	echo "FAILED!"
 else
     	echo "SUCCESSFUL!"
