@@ -4,9 +4,6 @@
 echo "LOCALIP=$1"
 echo "LOCALUSERNAME=$2"
 echo "LOCALPASSWD=$3"
-echo "REMOTEIP=$4"
-echo "REMOTEUSERNAME=$5"
-echo "REMOTEPASSWD=$6"
 
 PASSWD=$3
 
@@ -64,4 +61,14 @@ echo $PASSWD | sudo -S sed -i '$a hostname='"$1" /var/lib/mysql-cluster/config.i
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 # 2.2 my.cnf
-
+echo $PASSWD | sudo -S touch /etc/my.cnf
+echo $PASSWD | sudo -S chmod 666 /etc/my.cnf
+echo $PASSWD | sudo -S echo "" >/etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a [mysqld]' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '1d' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a ndbcluster' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a datadir=/usr/local/mysql/data' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a basedir=/usr/local/mysql' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a port=3306' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a [mysql_cluster]' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a ndb-connectstring='"$1" /etc/my.cnf
