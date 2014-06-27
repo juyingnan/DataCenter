@@ -2,7 +2,7 @@
 # 管理节点
 
 # 0. 如果已经存在MySql，需要先删除
-# manual now 
+echo $2 | sudo -S apt-get -y purge mysql-*
 # 1. install MySql Cluster
 cd /tmp
 # 1.1 extract
