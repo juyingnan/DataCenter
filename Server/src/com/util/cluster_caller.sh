@@ -27,7 +27,7 @@ eof}
 
 auto_smart_scp () {
 expect -c "set timeout -1;
-spawn scp $2 $3;
+spawn scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $2 $3;
 expect {
 *assword:* {send -- $1\r;
 expect {
