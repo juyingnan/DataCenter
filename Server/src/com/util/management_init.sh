@@ -9,6 +9,7 @@ PASSWD=$3
 
 # 0. 如果已经存在MySql，需要先删除
 echo $PASSWD | sudo -S apt-get -y purge mysql-*
+echo $PASSWD | sudo -S apt-get -y install libaio-dev expect
 # 1. install MySql Cluster
 cd /tmp
 # 1.1 extract
