@@ -59,4 +59,4 @@ echo $PATH
 # 2. mysql config
 # 2.1 my.cnf
 auto_smart_scp $6 $5@$4:/etc/my.cnf /tmp
-echo $PASSWD | sudo -S cp /etc/my.cnf etc/my.cnf
+echo $PASSWD | sudo -S cp /tmp/my.cnf etc/my.cnf
