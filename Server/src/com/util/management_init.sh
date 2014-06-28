@@ -14,7 +14,7 @@ cd /tmp
 # 1.1 extract
 tar -zxvf mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64.tar.gz
 # 1.2 move
-echo $PASSWD | sudo -S cp -r ./mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64 /usr/local/mysql
+echo $PASSWD | sudo -S mv -r ./mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64 /usr/local/mysql
 # 1.3 chown & chgrp
 cd /usr/local/mysql
 echo $PASSWD | sudo -S addgroup mysql
