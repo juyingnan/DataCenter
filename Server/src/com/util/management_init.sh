@@ -76,28 +76,14 @@ echo $PASSWD | sudo -S sed -i '$a max_connections=100' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a datadir=/usr/local/mysql/data' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a basedir=/usr/local/mysql' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a ndbcluster' /etc/my.cnf
-echo $PASSWD | sudo -S sed -i '$a ndbcluster' /etc/my.cnf
-echo $PASSWD | sudo -S sed -i '$a ndbcluster' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a ndb-connectstring='"$1" /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a [mysqld_safe]' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a log-error=/var/log/mysqld.log' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a [mysql_cluster]' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a ndb-connectstring='"$1" /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a [NDB_MGM]' /etc/my.cnf
+echo $PASSWD | sudo -S sed -i '$a connect-string='"$1" /etc/my.cnf
 echo $PASSWD | sudo -S chmod 644 /etc/my.cnf
-
-[mysqld]
-max_connections=100
-basedir=/usr/local/mysql
-datadir=/usr/local/mysql/data
-ndbcluster
-ndb-connectstring=10.182.71.127
-
-[mysqld_safe]
-log-error=/var/log/mysqld.log
-
-[mysql_cluster]
-ndb-connectstring=10.182.71.127
-
-[NDB_MGM]
-connect-string=10.182.71.127
-
 
 # shutdown firewall
 echo $PASSWD | sudo -S iptables -F 
