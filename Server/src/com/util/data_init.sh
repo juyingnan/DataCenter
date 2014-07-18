@@ -32,11 +32,11 @@ cd /tmp
 # 1.1 extract
 tar -zxvf mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64.tar.gz
 # 1.2 move
-echo $PASSWD | sudo -S mv -r ./mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64 /usr/local/mysql
+echo $PASSWD | sudo -S mv ./mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64 /usr/local/mysql
 # 1.3 chown & chgrp
 cd /usr/local/mysql
 echo $PASSWD | sudo -S addgroup mysql
-echo $PASSWD | sudo -S adduser --ingroup mysql mysql
+echo $PASSWD | sudo -S useradd -g mysql mysql
 echo $PASSWD | sudo -S chown -R root .
 echo $PASSWD | sudo -S chown -R mysql ./data
 echo $PASSWD | sudo -S chgrp -R mysql .
@@ -54,6 +54,8 @@ else
     echo "/etc/profile needs changes"
     echo $PASSWD | sudo -S sed -i '$a PATH=$PATH:/usr/local/mysql/bin' /etc/profile
     echo $PASSWD | sudo -S sed -i '$a export PATH' /etc/profile
+    echo $PASSWD | sudo -S PATH=$PATH:/usr/local/mysql/bin
+    echo $PASSWD | sudo -S export PATH
 fi
 echo $PATH
 # 2. mysql config
