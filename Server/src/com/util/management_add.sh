@@ -12,7 +12,7 @@ PASSWD=$3
 
 NUM=`/usr/local/bin/ndb_mgm -e "show;"|grep mysqld|awk '{print $2}' `
 let NDBDID=$NUM*2-2
-echo $PASSWD | sudo -S /usr/local/mysql/bin/ndb_mgm -e shutdown
+
 echo $PASSWD | sudo -S sed -i '$d' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$d' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [ndbd]' /var/lib/mysql-cluster/config.ini
@@ -24,4 +24,5 @@ echo $PASSWD | sudo -S sed -i '$a hostname='"$4" /var/lib/mysql-cluster/config.i
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 
-echo $PASSWD | sudo -S /usr/local/bin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini --initial --ndb-nodeid=1
+echo $PASSWD | sudo -S /usr/local/bin/ndb_mgm -e "1 stop;"
+echo $PASSWD | sudo -S /usr/local/bin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini --reload
