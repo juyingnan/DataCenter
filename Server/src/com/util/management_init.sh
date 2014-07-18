@@ -79,3 +79,5 @@ echo $PASSWD | sudo -S sed -i '$a port=3306' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a [mysql_cluster]' /etc/my.cnf
 echo $PASSWD | sudo -S sed -i '$a ndb-connectstring='"$1" /etc/my.cnf
 echo $PASSWD | sudo -S chmod 644 /etc/my.cnf
+# shutdown firewall
+echo $PASSWD | sudo -S iptables -F 
