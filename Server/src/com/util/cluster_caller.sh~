@@ -1,8 +1,5 @@
 #!/bin/bash
 
-PASSWD=$1
-shift
-
 #IF_COPY_CLUSTER_FILE=$1
 #FILE=$2
 #LOCAL_IP=$3
@@ -11,6 +8,8 @@ shift
 #REMOTE_IP=$6
 #REMOTE_USER_USERNAME=$7
 #REMOTE_USER_PASSWD=$8
+
+
 
 auto_smart_ssh () {
 expect -c "set timeout -1;
@@ -52,8 +51,6 @@ shift
 #REMOTE_USER_USERNAME=$6
 #REMOTE_USER_PASSWD=$7
 #REMOTE_MYSQL_PASSWD=$8
-
-echo $PASSWD | sudo -S apt-get -y install libaio-dev expect
 
 cd $(cd "$(dirname "$0")"; pwd)
 echo $(pwd)
