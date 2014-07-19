@@ -128,18 +128,18 @@ public class ShellRunner
 	public void clusterManagementInit(String myPasswd, Boolean isCopyTar, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
 	{
 
-		boolean result = clusterSyncRunner(isCopyTar, "management_init.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
-		result = clusterSyncRunner(isCopyTar, "management_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		boolean result = clusterSyncRunner(myPasswd, isCopyTar, "management_init.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		result = clusterSyncRunner(myPasswd, isCopyTar, "management_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
 		// System.out.println(result);
 	}
 
 	public void clusterDataNodeAdd(String myPasswd, Boolean isCopyTar, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
 	{
 
-		boolean result = clusterSyncRunner(isCopyTar, "management_add.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
-		result = clusterSyncRunner(isCopyTar, "data_init.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
-		result = clusterSyncRunner(isCopyTar, "management_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
-		result = clusterSyncRunner(isCopyTar, "data_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		boolean result = clusterSyncRunner(myPasswd, isCopyTar, "management_add.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		result = clusterSyncRunner(myPasswd, isCopyTar, "data_init.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		//result = clusterSyncRunner(myPasswd, isCopyTar, "management_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		result = clusterSyncRunner(myPasswd, isCopyTar, "data_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
 		// System.out.println(result);
 	}
 }
