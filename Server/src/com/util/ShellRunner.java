@@ -137,9 +137,9 @@ public class ShellRunner
 	{
 
 		boolean result = clusterSyncRunner(myPasswd, isCopyTar, "management_add.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
-		result = clusterSyncRunner(myPasswd, isCopyTar, "data_init.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		result = clusterSyncRunner(myPasswd, isCopyTar, "data_init.sh", remoteIP, remoteUsername, remoteUserPasswd, localIP, localUserName, localUserPasswd);
 		//result = clusterSyncRunner(myPasswd, isCopyTar, "management_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
-		result = clusterSyncRunner(myPasswd, isCopyTar, "data_start.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		result = clusterSyncRunner(myPasswd, isCopyTar, "data_start.sh", remoteIP, remoteUsername, remoteUserPasswd, localIP, localUserName, localUserPasswd);
 		// System.out.println(result);
 	}
 }
