@@ -39,13 +39,14 @@ public class ShellRunner
 		return run(shpath);
 	}
 
-	private boolean clusterSyncRunner(Boolean isCopyTar, String filename, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
+	private boolean clusterSyncRunner(String myPasswd, Boolean isCopyTar, String filename, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
 	{
 		/*
 		 * mode: false master_slave true master_master
 		 */
 		String shpath;
 		shpath = "src/com/util/cluster_caller.sh ";
+		shpath += myPasswd + " ";
 		shpath += isCopyTar + " " + filename + " ";
 		shpath += localIP + " " + localUserName + " " + localUserPasswd + " ";
 		shpath += remoteIP + " " + remoteUsername + " " + remoteUserPasswd;
@@ -95,6 +96,7 @@ public class ShellRunner
 		 * Cluster Sync Test
 		 */
 		// parameters
+		String myPasswd = "";
 		boolean isCopyTar = false;
 		String localIP = "";
 		String localUserName = "";
@@ -104,10 +106,10 @@ public class ShellRunner
 		String remoteUserPasswd = "";
 
 		// Management Init & Start Test
-		shellRunner.clusterManagementInit(true, localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		shellRunner.clusterManagementInit(myPasswd, true, localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
 
 		// Data Node Add Test
-		shellRunner.clusterDataNodeAdd(true, localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
+		shellRunner.clusterDataNodeAdd(myPasswd, true, localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
 
 	}
 
@@ -123,7 +125,7 @@ public class ShellRunner
 		System.out.println(result);
 	}
 
-	public void clusterManagementInit(Boolean isCopyTar, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
+	public void clusterManagementInit(String myPasswd, Boolean isCopyTar, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
 	{
 
 		boolean result = clusterSyncRunner(isCopyTar, "management_init.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
@@ -131,7 +133,7 @@ public class ShellRunner
 		// System.out.println(result);
 	}
 
-	public void clusterDataNodeAdd(Boolean isCopyTar, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
+	public void clusterDataNodeAdd(String myPasswd, Boolean isCopyTar, String localIP, String localUserName, String localUserPasswd, String remoteIP, String remoteUsername, String remoteUserPasswd)
 	{
 
 		boolean result = clusterSyncRunner(isCopyTar, "management_add.sh", localIP, localUserName, localUserPasswd, remoteIP, remoteUsername, remoteUserPasswd);
