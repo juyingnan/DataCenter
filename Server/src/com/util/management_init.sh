@@ -37,8 +37,8 @@ else
     echo "/etc/profile needs changes"
     echo $PASSWD | sudo -S sed -i '$a PATH=$PATH:/usr/local/mysql/bin' /etc/profile
     echo $PASSWD | sudo -S sed -i '$a export PATH' /etc/profile
-    echo $PASSWD | sudo -S PATH=$PATH:/usr/local/mysql/bin
-    echo $PASSWD | sudo -S export PATH
+    echo $PASSWD | PATH=$PATH:/usr/local/mysql/bin
+    echo $PASSWD | export PATH
 fi 
 echo $PATH
 # 2. mysql config
