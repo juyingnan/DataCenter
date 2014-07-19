@@ -16,8 +16,7 @@ let NDBDID=$NUM*2-2
 echo $PASSWD | sudo -S sed -i '$d' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$d' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [ndbd]' /var/lib/mysql-cluster/config.ini
-echo $PASSWD | sudo -S sed -i '$a NodeId='"$NDBDID" /var/lib/mysql-cluster/config.ini
-echo $PASSWD | sudo -S sed -i '$a hostname='"$4" /var/lib/mysql-cluster/config.ini
+# echo $PASSWD | sudo -S sed -i '$a hostname='"$4" /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a datadir=/usr/local/mysql/data/' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a hostname='"$4" /var/lib/mysql-cluster/config.ini
