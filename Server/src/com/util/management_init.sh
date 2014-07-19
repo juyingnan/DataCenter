@@ -18,8 +18,8 @@ tar -zxvf mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64.tar.gz
 echo $PASSWD | sudo -S mv ./mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64 /usr/local/mysql
 # 1.3 chown & chgrp
 cd /usr/local/mysql
-echo $PASSWD | sudo -S addgroup mysql
-echo $PASSWD | sudo -S useradd -g mysql mysql
+echo $PASSWD | sudo -S addgroup mysql
+echo $PASSWD | sudo -S useradd -g mysql mysql
 echo $PASSWD | sudo -S chown -R root .
 echo $PASSWD | sudo -S chown -R mysql ./data
 echo $PASSWD | sudo -S chgrp -R mysql .
