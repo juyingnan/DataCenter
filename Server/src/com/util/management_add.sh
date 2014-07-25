@@ -23,7 +23,7 @@ echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 let NDBDID=$NDBDID+1
 echo $PASSWD | sudo -S sed -i '$a NodeId='"$NDBDID" /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a hostname='"$4" /var/lib/mysql-cluster/config.ini
-echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
+echo $PASSWD | sudo -S sed -i '$a [ndbd]' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 
 echo $PASSWD | sudo -S /usr/local/bin/ndb_mgm -e "1 stop;"
