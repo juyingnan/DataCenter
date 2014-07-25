@@ -25,5 +25,7 @@ echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 
 echo $PASSWD | sudo -S /usr/local/bin/ndb_mgm -e "1 stop;"
+sleep 20s
 echo $PASSWD | sudo -S /usr/local/bin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini --reload
+sleep 20s
 # echo $PASSWD | sudo -S /usr/local/bin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini --reload --ndb-nodeid=1
