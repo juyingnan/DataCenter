@@ -8,17 +8,18 @@ PASSWD=$3
 
 # 启动管理节点
 echo $PASSWD | sudo -S /usr/local/bin/ndb_mgmd -f /var/lib/mysql-cluster/config.ini --initial --ndb-nodeid=1
-sleep 10s
+sleep 5s
 
 # 启动数据节点
 echo $PASSWD | sudo -S /usr/local/mysql/bin/ndbd --initial
-sleep 20s
+sleep 10s
 
 # 启动SQL节点
 echo $PASSWD | sudo -S service mysqld start
-sleep 30s
+sleep 10s
 
 # 返回结果
+echo $PASSWD | sudo -S /usr/local/bin/ndb_mgm -e "show;"
 RESULT=`/usr/local/bin/ndb_mgm -e "show;" | grep -c "$1" `
 if [ $RESULT != 4 ] ;then
     	echo "FAILED!"
