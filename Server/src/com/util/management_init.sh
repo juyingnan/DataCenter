@@ -62,6 +62,7 @@ echo $PASSWD | sudo -S sed -i '$a NodeId=2' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a hostname='"$1" /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a datadir=/usr/local/mysql/data/' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
+echo $PASSWD | sudo -S sed -i '$a NodeId=3' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a hostname='"$1" /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
 echo $PASSWD | sudo -S sed -i '$a [mysqld]' /var/lib/mysql-cluster/config.ini
