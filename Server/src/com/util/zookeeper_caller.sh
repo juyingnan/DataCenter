@@ -60,9 +60,9 @@ echo $(pwd)
 
 if [ $IF_COPY_CLUSTER_FILE = "True" ] ; then
   echo "copying cluster file."
-  auto_smart_scp $3 ./mysql-cluster-gpl-7.3.5-linux-glibc2.5-x86_64.tar.gz $2@$1:/tmp
+  auto_smart_scp $3 ./zookeeper-3.4.6.tar.gz $2@$1:/tmp
 else
-  echo "skipped copying cluster file."
+  echo "skipped copying zookeeper file."
 fi
 
 auto_smart_scp $3 ./$FILE $2@$1:/tmp
