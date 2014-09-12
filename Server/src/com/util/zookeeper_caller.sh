@@ -9,8 +9,7 @@ shift
 #LOCAL_USER_NAME=$4
 #LOCAL_USER_PASSWD=$5
 #REMOTE_IP=$6
-#REMOTE_USER_USERNAME=$7
-#REMOTE_USER_PASSWD=$8
+#REMOTE_IP=$7
 
 auto_smart_ssh () {
 expect -c "set timeout -1;
@@ -47,11 +46,8 @@ shift
 #LOCAL_IP=$1
 #LOCAL_USER_NAME=$2
 #LOCAL_USER_PASSWD=$3
-#LOCAL_MYSQL_PASSWD=$4
+#REMOTE_IP=$4
 #REMOTE_IP=$5
-#REMOTE_USER_USERNAME=$6
-#REMOTE_USER_PASSWD=$7
-#REMOTE_MYSQL_PASSWD=$8
 
 echo $PASSWD | sudo -S apt-get -y install libaio-dev expect
 
@@ -67,3 +63,7 @@ fi
 
 auto_smart_scp $3 ./$FILE $2@$1:/tmp
 auto_smart_ssh $3 $2@$1 "/tmp/$FILE $*"
+auto_smart_scp $3 ./$FILE $2@$4:/tmp
+auto_smart_ssh $3 $2@$4 "/tmp/$FILE $*"
+auto_smart_scp $3 ./$FILE $2@$5:/tmp
+auto_smart_ssh $3 $2@$5 "/tmp/$FILE $*"
