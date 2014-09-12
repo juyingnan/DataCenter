@@ -62,8 +62,8 @@ else
 fi
 
 auto_smart_scp $3 ./$FILE $2@$1:/tmp
-auto_smart_ssh $3 $2@$1 "/tmp/$FILE $*"
+auto_smart_ssh $3 $2@$1 "/tmp/$FILE 1 $*"
 auto_smart_scp $3 ./$FILE $2@$4:/tmp
-auto_smart_ssh $3 $2@$4 "/tmp/$FILE $*"
+auto_smart_ssh $3 $2@$4 "/tmp/$FILE 2 $*"
 auto_smart_scp $3 ./$FILE $2@$5:/tmp
-auto_smart_ssh $3 $2@$5 "/tmp/$FILE $*"
+auto_smart_ssh $3 $2@$5 "/tmp/$FILE 3 $*"
